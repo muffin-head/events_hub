@@ -4,6 +4,7 @@ name: databrideployment
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'SKIP SCRIPTS')" 
     env:
       ResourceGroupName: event_hub-rg
       ResourceGroupLocation: "eastus"
@@ -22,13 +23,17 @@ jobs:
             az group create --name ${{ env.ResourceGroupName }} --location ${{ env.ResourceGroupLocation }}
             echo "Azure resource group created"
           fi
-
-  
+    - name: Test1
+      id: Test1
+      run: |
+        check=$(az resource list --resource-group  'event_hub-rg' --query "[?name=='TestVm-DataDisk0'] | length(@)")
+        echo "$check"
     - uses: azure/arm-deploy@v1
-      with:
-        resourceGroupName: ${{ env.ResourceGroupName }}
-        template: azuredeploy.json
-        parameters: azuredeploy.parameters.json
+    
+#      with:
+#        resourceGroupName: ${{ env.ResourceGroupName }}
+#        template: azuredeploy.json
+#        parameters: azuredeploy.parameters.json
         
 ##    - uses: azure/arm-deploy@v1
 #      with:
