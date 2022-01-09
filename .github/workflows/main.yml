@@ -24,22 +24,14 @@ jobs:
             az group create --name ${{ env.ResourceGroupName }} --location ${{ env.ResourceGroupLocation }}
             echo "Azure resource group created"
           fi
-    - uses: azure/arm-deploy@v1
-    
-      with:
-        inlineScript: |
-          #!/bin/powershell
-          $planCheck = az resource list --resource-group  'event_hub-rg' --query "[?name=='TestVm-DataDisk0'] " | ConvertFrom-Json
-          $planExists = $planCheck.Length -gt 0
-          $check = $planExists 
-          echo "$check"
           
-      
-        if: startsWith($check, "False")
-        run: |
-        
-          resourceGroupName: ${{ env.ResourceGroupName }}
-          template: azuredeploy.json
-          parameters: azuredeploy.parameters.json
+  
+          inlineScript: |
+            #!/bin/powershell
+            $planCheck = az resource list --resource-group  'event_hub-rg' --query "[?name=='TestVm-DataDisk0'] " | ConvertFrom-Json
+            $planExists = $planCheck.Length -gt 0
+            $check = $planExists 
+            echo "$check"
+
       
    
